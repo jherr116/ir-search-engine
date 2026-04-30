@@ -54,9 +54,12 @@ def extract_post_fields(post) -> dict:
     linked_url   = None
     linked_title = None
     embed = getattr(record, "embed", None)
-    if embed and hasattr(embed, "external"):
-        linked_url   = embed.external.uri
-        linked_title = get_page_title(linked_url)
+    try:
+        if embed and embed.external:
+            linked_url   = embed.external.uri
+            linked_title = get_page_title(linked_url)
+    except AttributeError:
+        pass
 
     return {
         # --- Identifiers ---

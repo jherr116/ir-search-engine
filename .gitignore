@@ -1,0 +1,27 @@
+# ── Data files (too large for git) ───────────────
+data/
+*.jsonl
+
+# ── Python ────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+env/
+.venv/
+
+# ── Credentials (NEVER commit these) ─────────────
+secrets.sh
+.env
+
+# ── macOS junk ────────────────────────────────────
+.DS_Store
+
+# ── PyLucene index (Part B) ───────────────────────
+index/
+lucene_index/
+
+# ── IDE files ─────────────────────────────────────
+.vscode/
+.idea/

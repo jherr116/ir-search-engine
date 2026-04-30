@@ -16,8 +16,8 @@
 # =============================================================================
 
 # ── CONFIGURATION (fill these in before submitting) ──────────────────────────
-BSKY_HANDLE="${BSKY_HANDLE:-your_handle.bsky.social}"
-BSKY_PASSWORD="${BSKY_PASSWORD:-your_app_password_here}"
+BSKY_HANDLE="jherr116.bsky.social"
+BSKY_PASSWORD="wc4v-foz5-vwvr-tedm"
 
 # ── Argument Parsing ─────────────────────────────────────────────────────────
 QUERY="${1:-artificial intelligence}"

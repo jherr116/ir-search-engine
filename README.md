@@ -1,40 +1,11 @@
 # IR Project — Bluesky Search Engine
 
-**Team Members:** [List names and contributions here]
-**Course:** Information Retrieval
-**Part A:** Bluesky Data Collector
-
----
-
 ## Project Overview
 
 This project builds a search engine over Bluesky social media posts.
 
-- **Part A** (this folder): Collects posts from the Bluesky API and stores them as JSONL files.
-- **Part B** (separate): Indexes the JSONL files with PyLucene and provides a Flask-based search UI.
-
----
-
-## Folder Structure
-
-```
-bluesky_ir_project/
-├── README.md               ← You are here
-│
-├── part_a/                 ← Data collection (Part A)
-│   ├── collector.sh        ← Entry point (run this to collect data)
-│   ├── collector.py        ← Main collection logic
-│   ├── verify_data.py      ← Sanity check after collection
-│   └── requirements.txt    ← Python dependencies
-│
-├── part_b/                 ← Search engine (Part B — coming later)
-│   └── (indexer and Flask app go here)
-│
-└── data/                   ← Output JSONL files (created automatically)
-    ├── posts_001.jsonl
-    ├── posts_002.jsonl
-    └── ...
-```
+- **Part A**: Collects posts from the Bluesky API and stores them as JSONL files.
+- **Part B**: Indexes the JSONL files with PyLucene and provides a Flask-based search UI.
 
 ---
 
@@ -50,27 +21,7 @@ Check with:
 python3 --version
 pip --version
 ```
-
-### Step 2: Get a Bluesky Account & App Password
-
-1. Create a free account at [bsky.app](https://bsky.app)
-2. Go to **Settings → Privacy and Security → App Passwords**
-3. Click **Add App Password**, name it `ir-project`, copy the password
-
-> ⚠️ Use an **App Password**, NOT your main account password.
-
-### Step 3: Set Credentials
-
-**Option A — Environment variables (recommended):**
-```bash
-export BSKY_HANDLE="yourhandle.bsky.social"
-export BSKY_PASSWORD="xxxx-xxxx-xxxx-xxxx"
-```
-
-**Option B — Edit collector.sh directly:**
-Open `part_a/collector.sh` and fill in the CONFIGURATION section at the top.
-
-### Step 4: Run the Collector
+### Step 2: Run the Collector
 
 ```bash
 cd part_a
@@ -165,7 +116,7 @@ Bluesky Search API
 
 | Member | Contribution |
 |---|---|
-| [Name 1] | [e.g., Collector script, API integration] |
+| Javier Herrera Jr | Created code skeleton, created bluesky account, edited shell script for bluesky login, created github repo, Debugger. |
 | [Name 2] | [e.g., URL enrichment, file rotation] |
 | [Name 3] | [e.g., Verification script, README] |
 | [Name 4] | [e.g., Part B indexer] |
