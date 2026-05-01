@@ -158,7 +158,17 @@ def collect(query: str, max_posts: int, output_dir: str, handle: str, password: 
             if cursor:
                 params["cursor"] = cursor
 
-            response = client.app.bsky.feed.search_posts(params=params)
+            response = None
+            for attempt in range(5):
+                try:
+                    response = client.app.bsky.feed.search_posts(params=params)
+                    break
+                except Exception as error:
+                    print(f"  Network Timeout Occured, retrying again in {2 ** attempt}s...")
+                    time.sleep(2 ** attempt)
+            else:
+                print("  Still failed after five retry attempts, skipping page")
+                continue
 
             if not response.posts:
                 print("  No more posts returned by API.")
