@@ -76,11 +76,11 @@ def extract_post_fields(post) -> dict:
         "author_handle":        post.author.handle,
         "author_display_name":  getattr(post.author, "display_name", ""),
         "text":                 record.text,
-        "langs":                getattr(record, "langs", []),
+        "langs":                getattr(record, "langs", None) or [],
         "created_at":           record.created_at,
-        "like_count":           getattr(post, "like_count", 0),
-        "repost_count":         getattr(post, "repost_count", 0),
-        "reply_count":          getattr(post, "reply_count", 0),
+        "like_count":           getattr(post, "like_count",   None) or 0,
+        "repost_count":         getattr(post, "repost_count", None) or 0,
+        "reply_count":          getattr(post, "reply_count",  None) or 0,
         "linked_url":           linked_url,
         "linked_page_title":    linked_title,
     }
@@ -147,7 +147,7 @@ def collect(client, query: str, max_posts: int, output_dir: str,
                 time.sleep(2 ** attempt)
         else:
             print("  Still failed after five retry attempts, skipping page")
-            continue
+            break
 
         if not response.posts:
             print(f"  No more posts for '{query}'.")
