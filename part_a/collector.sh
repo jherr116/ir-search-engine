@@ -4,9 +4,13 @@
 #
 # Usage:
 #   ./collector.sh <query> <max-posts> <output-dir>
+#   ./collector.sh <max-posts> <output-dir>
 #
 # Example:
-#   ./collector.sh "artificial intelligence" 5000 ../data
+#   ./collector.sh "artifical intelligence" 5000 ../data
+#   ./collector.sh 5000 ../data
+#
+# Keywords are hardcoded in collector.py (political keyword list)
 #
 # Credentials are read from environment variables:
 #   export BSKY_HANDLE="yourhandle.bsky.social"
@@ -20,13 +24,15 @@ BSKY_HANDLE="jherr116.bsky.social"
 BSKY_PASSWORD="wc4v-foz5-vwvr-tedm"
 
 # ── Argument Parsing ─────────────────────────────────────────────────────────
-QUERY="${1:-artificial intelligence}"
-MAX_POSTS="${2:-5000}"
-OUTPUT_DIR="${3:-../data}"
+# QUERY="${1:-artificial intelligence}"
+# MAX_POSTS="${2:-5000}"
+# OUTPUT_DIR="${3:-../data}"
+MAX_POSTS="${1:-5000}"
+OUTPUT_DIR="${2:-../data}"
 
 echo "============================================================"
 echo "  IR Project — Part A: Bluesky Collector"
-echo "  Query      : $QUERY"
+# echo "  Query      : $QUERY"
 echo "  Max posts  : $MAX_POSTS"
 echo "  Output dir : $OUTPUT_DIR"
 echo "============================================================"
@@ -34,15 +40,15 @@ echo "============================================================"
 # ── Dependency Check ─────────────────────────────────────────────────────────
 echo ""
 echo "[1/3] Checking Python..."
-python3 --version || { echo "ERROR: python3 not found."; exit 1; }
+python --version || { echo "ERROR: python or python3 not found."; exit 1; }
 
 echo "[2/3] Installing dependencies..."
 pip install -r requirements.txt --quiet
 
 # ── Run Collector ─────────────────────────────────────────────────────────────
+#    --query      "$QUERY" \
 echo "[3/3] Starting collection..."
-python3 collector.py \
-    --query      "$QUERY" \
+python collector.py \
     --max-posts  "$MAX_POSTS" \
     --output-dir "$OUTPUT_DIR" \
     --handle     "$BSKY_HANDLE" \
