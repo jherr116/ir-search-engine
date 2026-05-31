@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ query }} — SkySearch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sky:    #0085ff;
+      --sky-lt: #e8f4ff;
+      --ink:    #0a0f1e;
+      --mist:   #f0f4fa;
+      --border: #d0daea;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--mist);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Header / Search Bar ── */
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--ink);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .brand span { color: var(--sky); }
+
+    .header-search {
+      flex: 1;
+      display: flex;
+      gap: 0.4rem;
+      max-width: 560px;
+    }
+
+    .header-search input {
+      flex: 1;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .header-search input:focus { border-color: var(--sky); }
+
+    .header-search button {
+      background: var(--sky);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1.1rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    /* ── Sort Controls ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .result-meta {
+      font-size: 0.82rem;
+      color: #6b7a99;
+      margin-right: auto;
+    }
+
+    .sort-label {
+      font-size: 0.82rem;
+      color: #6b7a99;
+    }
+
+    .sort-btn {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      color: #5a6a8a;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .sort-btn:hover          { border-color: var(--sky); color: var(--sky); }
+    .sort-btn.active         { background: var(--sky); border-color: var(--sky); color: white; font-weight: 600; }
+
+    /* ── Result Cards ── */
+    .results { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.3rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      animation: fadeUp 0.3s ease both;
+    }
+
+    .card:hover {
+      border-color: var(--sky);
+      box-shadow: 0 2px 16px rgba(0,133,255,0.08);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--sky-lt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--sky);
+      flex-shrink: 0;
+    }
+
+    .author-info { min-width: 0; }
+
+    .author-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .author-handle {
+      font-size: 0.78rem;
+      color: #8a9ab8;
+    }
+
+    .card-score {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: #a0aec0;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .card-score strong { color: var(--sky); }
+
+    /* Snippet with highlighted terms */
+    .snippet {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #2d3a52;
+      margin-bottom: 0.7rem;
+    }
+
+    .snippet mark {
+      background: #fff3b0;
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+
+    /* Linked page title */
+    .linked-page {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: var(--sky);
+      text-decoration: none;
+      background: var(--sky-lt);
+      border-radius: 6px;
+      padding: 0.2rem 0.6rem;
+      margin-bottom: 0.6rem;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .linked-page:hover { text-decoration: underline; }
+
+    .card-footer {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.78rem;
+      color: #8a9ab8;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .stat { display: flex; align-items: center; gap: 0.25rem; }
+
+    .post-link {
+      margin-left: auto;
+      font-size: 0.78rem;
+      color: var(--sky);
+      text-decoration: none;
+    }
+
+    .post-link:hover { text-decoration: underline; }
+
+    /* ── Empty State ── */
+    .empty {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: #6b7a99;
+    }
+
+    .empty h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* stagger cards */
+    {% for i in range(10) %}
+    .card:nth-child({{ i + 1 }}) { animation-delay: {{ i * 0.04 }}s; }
+    {% endfor %}
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="/">Sky<span>Search</span></a>
+  <form class="header-search" action="/search" method="get">
+    <input type="text" name="q" value="{{ query }}" autocomplete="off">
+    <input type="hidden" name="sort" value="{{ sort_mode }}">
+    <button type="submit">Search</button>
+  </form>
+</header>
+
+<div class="page">
+
+  <!-- Sort Controls -->
+  <div class="controls">
+    <span class="result-meta">
+      {% if total > 0 %}
+        About <strong>{{ total }}</strong> results &nbsp;·&nbsp; showing top {{ count }}
+      {% endif %}
+    </span>
+    <span class="sort-label">Sort by:</span>
+
+    {% set sorts = [("combined", "✦ Combined"), ("relevance", "Relevance"), ("likes", "Most Liked"), ("newest", "Newest")] %}
+    {% for val, label in sorts %}
+      <a class="sort-btn {% if sort_mode == val %}active{% endif %}"
+         href="/search?q={{ query | urlencode }}&sort={{ val }}">
+        {{ label }}
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Results -->
+  {% if results %}
+  <div class="results">
+    {% for r in results %}
+    <div class="card">
+
+      <!-- Author row -->
+      <div class="card-header">
+        <div class="avatar">
+          {{ (r.display_name or r.author or "?")[0].upper() }}
+        </div>
+        <div class="author-info">
+          <div class="author-name">{{ r.display_name or r.author }}</div>
+          <div class="author-handle">@{{ r.author }}</div>
+        </div>
+        <div class="card-score">
+          {% if sort_mode == "combined" %}
+            Score <strong>{{ "%.3f"|format(r.combined_score) }}</strong>
+          {% else %}
+            Score <strong>{{ "%.4f"|format(r.lucene_score) }}</strong>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Snippet (extra credit: custom highlighter) -->
+      {% if r.snippet %}
+        <div class="snippet">{{ r.snippet | safe }}</div>
+      {% endif %}
+
+      <!-- Linked page title if present -->
+      {% if r.linked_url and r.linked_title %}
+        <a class="linked-page" href="{{ r.linked_url }}" target="_blank" rel="noopener">
+          🔗 {{ r.linked_title }}
+        </a>
+      {% endif %}
+
+      <!-- Footer stats -->
+      <div class="card-footer">
+        <span class="stat">❤️ {{ r.like_count }}</span>
+        <span class="stat">🔁 {{ r.repost_count }}</span>
+        <span class="stat">💬 {{ r.reply_count }}</span>
+        {% if r.created_at %}
+          <span class="stat">🕐 {{ r.created_at[:10] }}</span>
+        {% endif %}
+        {% if r.uri %}
+          <a class="post-link"
+             href="https://bsky.app/profile/{{ r.author }}/post/{{ r.uri.split('/')[-1] }}"
+             target="_blank" rel="noopener">
+            View post ↗
+          </a>
+        {% endif %}
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="empty">
+    <h2>No results for "{{ query }}"</h2>
+    <p>Try different keywords or check if the index has been built.</p>
+  </div>
+  {% endif %}
+
+</div>
+</body>
+</html>

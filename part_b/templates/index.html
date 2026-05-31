@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkySearch — Bluesky IR Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sky:    #0085ff;
+      --sky-lt: #e8f4ff;
+      --ink:    #0a0f1e;
+      --mist:   #f0f4fa;
+      --border: #d0daea;
+      --radius: 14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--mist);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* Subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .hero {
+      position: relative;
+      text-align: center;
+      max-width: 640px;
+      width: 100%;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .logo-mark {
+      width: 64px;
+      height: 64px;
+      background: var(--sky);
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0,133,255,0.3);
+    }
+
+    .logo-mark svg { width: 34px; height: 34px; fill: white; }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 0.6rem;
+    }
+
+    h1 span { color: var(--sky); }
+
+    .subtitle {
+      color: #5a6a8a;
+      font-size: 1rem;
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.01em;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 0.5rem;
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.4rem 0.4rem 0.4rem 1.2rem;
+      box-shadow: 0 4px 24px rgba(10,15,30,0.08);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--sky);
+      box-shadow: 0 0 0 4px rgba(0,133,255,0.12), 0 4px 24px rgba(10,15,30,0.08);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      color: var(--ink);
+      background: transparent;
+      min-width: 0;
+    }
+
+    .search-box input::placeholder { color: #a0aec0; }
+
+    .search-box button {
+      background: var(--sky);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 0.65rem 1.4rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    .search-box button:hover  { background: #006fe0; }
+    .search-box button:active { transform: scale(0.97); }
+
+    .hints {
+      margin-top: 1.2rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hint-chip {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.82rem;
+      color: #5a6a8a;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .hint-chip:hover { border-color: var(--sky); color: var(--sky); }
+
+    .footer-note {
+      margin-top: 3rem;
+      font-size: 0.78rem;
+      color: #a0aec0;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="logo-mark">
+      <!-- Bluesky-inspired butterfly icon -->
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 10.8C10.7 8.4 7.3 4 4.5 4 1.5 4 0 6.3 0 8.5c0 2 1.2 4.5 4 4.5 1.5 0 3.5-.8 5-2.5.5-.6 1-1.1 1.5-1.5-.5.4-1 .9-1.5 1.5C7.5 12 5.5 12.8 4 12.8c-2.8 0-4-2.5-4-4.5 0-2.2 1.5-4.5 4.5-4.5 2.8 0 6.2 4.4 7.5 6.8v.2zm0 0c1.3-2.4 4.7-6.8 7.5-6.8C22.5 4 24 6.3 24 8.5c0 2-1.2 4.5-4 4.5-1.5 0-3.5-.8-5-2.5-.5-.6-1-1.1-1.5-1.5.5.4 1 .9 1.5 1.5 1.5 1.7 3.5 2.5 5 2.5 2.8 0 4-2.5 4-4.5 0-2.2-1.5-4.5-4.5-4.5-2.8 0-6.2 4.4-7.5 6.8v.2z"/>
+      </svg>
+    </div>
+
+    <h1>Sky<span>Search</span></h1>
+    <p class="subtitle">Search through Bluesky posts — powered by PyLucene</p>
+
+    <form class="search-box" action="/search" method="get">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search posts, authors, topics..."
+        autofocus
+        autocomplete="off"
+      >
+      <button type="submit">Search</button>
+    </form>
+
+    <div class="hints">
+      <a class="hint-chip" href="/search?q=artificial+intelligence">artificial intelligence</a>
+      <a class="hint-chip" href="/search?q=climate+change">climate change</a>
+      <a class="hint-chip" href="/search?q=python">python</a>
+      <a class="hint-chip" href="/search?q=open+source">open source</a>
+    </div>
+
+    <p class="footer-note">CS172 Information Retrieval Project · UC Riverside</p>
+  </div>
+</body>
+</html>

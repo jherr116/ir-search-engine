@@ -2,26 +2,28 @@
 data/
 *.jsonl
 
+# ── PyLucene index (binary, rebuilt from data) ────
+index/
+lucene_index/
+
 # ── Python ────────────────────────────────────────
 __pycache__/
 *.pyc
 *.pyo
-.env
 venv/
 env/
 .venv/
 
-# ── Credentials (NEVER commit these) ─────────────
-secrets.sh
+# ── Credentials ───────────────────────────────────
 .env
+secrets.sh
 
-# ── macOS junk ────────────────────────────────────
+# ── macOS ─────────────────────────────────────────
 .DS_Store
 
-# ── PyLucene index (Part B) ───────────────────────
-index/
-lucene_index/
+# ── Static assets you generate (not hand-written) ─
+static/cache/
 
-# ── IDE files ─────────────────────────────────────
+# ── IDE ───────────────────────────────────────────
 .vscode/
 .idea/
