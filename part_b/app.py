@@ -28,7 +28,7 @@ from org.apache.lucene.index import DirectoryReader
 from org.apache.lucene.queryparser.classic import MultiFieldQueryParser, QueryParser
 from org.apache.lucene.search import IndexSearcher, BooleanQuery
 from org.apache.lucene.store import FSDirectory
-
+from java.lang import String
 
 app = Flask(__name__)
 
@@ -139,24 +139,25 @@ def search(query_str: str, sort_mode: str = "combined", top_n: int = 50):
     Runs a PyLucene search across text, author, and linked_title fields.
     Returns top_n raw hits, then re-ranks based on sort_mode.
     """
+    lucene.getVMEnv().attachCurrentThread()
     if not query_str.strip():
         return [], 0
 
     # Search across multiple fields simultaneously
-    fields   = ["text", "author", "linked_title", "display_name"]
-    boosts   = {"text": 2.0, "author": 1.0, "linked_title": 1.5, "display_name": 0.5}
-    parser   = MultiFieldQueryParser(fields, _analyzer, boosts)
-    parser.setDefaultOperator(QueryParser.Operator.OR)
+ 
+    parser = QueryParser("text", _analyzer)
 
     try:
-        query = parser.parse(MultiFieldQueryParser.escape(query_str))
-    except Exception:
+        query = parser.parse(query_str)
+    except Exception as e:
+        print(f"PARSE ERROR: {e}")
         return [], 0
 
     # Get more than we need so we can re-rank
     top_docs = _searcher.search(query, top_n)
     hits     = top_docs.scoreDocs
     total    = top_docs.totalHits.value
+    print(f"DEBUG: query='{query_str}' hits={len(hits)} total={total}")
 
     # Extract query terms for snippet generation
     query_terms = [t.strip() for t in query_str.split() if t.strip()]
