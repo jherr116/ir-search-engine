@@ -110,6 +110,8 @@ Cmd+Shift+P → Dev Containers: Reopen in Container
 ```
 Wait ~2 minutes for the container to build. Only slow the first time.
 
+- If you need to, make sure the project is the only folder open, not your downloads folder or anything else. The container won't launch if it's not the only folder open
+
 **3. Collect data (Part A)**
 ```bash
 cd part_a
