@@ -40,7 +40,7 @@ echo "============================================================"
 # ── Dependency Check ─────────────────────────────────────────────────────────
 echo ""
 echo "[1/3] Checking Python..."
-python --version || { echo "ERROR: python or python3 not found."; exit 1; }
+python3 --version || { echo "ERROR: python or python3 not found."; exit 1; }
 
 echo "[2/3] Installing dependencies..."
 pip install -r requirements.txt --quiet
@@ -48,7 +48,7 @@ pip install -r requirements.txt --quiet
 # ── Run Collector ─────────────────────────────────────────────────────────────
 #    --query      "$QUERY" \
 echo "[3/3] Starting collection..."
-python collector.py \
+python3 collector.py \
     --max-posts  "$MAX_POSTS" \
     --output-dir "$OUTPUT_DIR" \
     --handle     "$BSKY_HANDLE" \

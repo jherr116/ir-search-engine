@@ -1,0 +1,23 @@
+{
+  "name": "PyLucene + Flask IR Environment",
+  "image": "coady/pylucene:9.12.0",
+  // Added --break-system-packages so pip doesn't crash on newer Linux environments
+  "postCreateCommand": "pip install --break-system-packages flask==3.0.3 requests==2.31.0 beautifulsoup4==4.12.3 atproto==0.0.55",
+  "forwardPorts": [5000],
+  "portsAttributes": {
+    "5000": {
+      "label": "Search UI",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.pylance"
+      ]
+    }
+  },
+  // Ensures VS Code handles file permissions smoothly between your Mac and the container
+  "updateRemoteUserUID": true
+}

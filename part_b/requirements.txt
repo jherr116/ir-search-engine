@@ -1,2 +1,1 @@
 flask==3.0.3
-pylucene==9.8.0
